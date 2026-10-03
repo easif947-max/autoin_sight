@@ -1,6 +1,7 @@
 streamlit
 pandas
 plotly
-langchain-groq
 crewai
+crewai-tools
+langchain-groq
 reportlab
