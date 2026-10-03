@@ -7,7 +7,7 @@ def get_llm_model_string() -> str:
     if not groq_key:
         raise ValueError("GROQ_API_KEY is missing from environment or Streamlit Secrets!")
     # CrewAI accepts Groq models directly using the "groq/<model_name>" format
-    return "groq/llama-3.3-70b-versatile"
+    return "openai/gpt-oss-120"
 
 def create_manager_agent():
     return Agent(
