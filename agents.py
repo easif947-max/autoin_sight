@@ -1,22 +1,26 @@
 import os
-from crewai import Agent
+from crewai import Agent, LLM
 from tools import profile_csv_dataset, create_pdf_report
 
-def get_llm_model_string() -> str:
+def get_llm():
     groq_key = os.environ.get("GROQ_API_KEY")
     if not groq_key:
-        raise ValueError("GROQ_API_KEY is missing from environment or Streamlit Secrets!")
-    # CrewAI accepts Groq models directly using the "groq/<model_name>" format
-    return "openai/gpt-oss-120"
+        raise ValueError("GROQ_API_KEY is missing! Set it in Streamlit Secrets.")
+    
+    # Use CrewAI's native LLM wrapper with the groq provider prefix
+    return LLM(
+        model="openai/gpt-oss-120b",
+        api_key=groq_key
+    )
 
 def create_manager_agent():
     return Agent(
         role="Data Strategy Director",
         goal="Parse dataset metrics, evaluate user questions, and guide the analytical direction.",
         backstory="An experienced AI Data Architect who coordinates analytics workflows.",
-        llm=get_llm_model_string(),
+        llm=get_llm(),
         verbose=True,
-        allow_delegation=False  # Changed to False to prevent Pydantic delegation schema validation errors
+        allow_delegation=False
     )
 
 def create_analyst_agent():
@@ -25,7 +29,7 @@ def create_analyst_agent():
         goal="Execute statistical data profiling and identify key trends and outliers.",
         backstory="A meticulous Data Scientist who works strictly with factual metrics.",
         tools=[profile_csv_dataset],
-        llm=get_llm_model_string(),
+        llm=get_llm(),
         verbose=True,
         allow_delegation=False
     )
@@ -36,7 +40,7 @@ def create_reporter_agent():
         goal="Synthesize raw statistical findings into executive summaries and PDF reports.",
         backstory="An executive consultant skilled at translating raw data into clear business insights.",
         tools=[create_pdf_report],
-        llm=get_llm_model_string(),
+        llm=get_llm(),
         verbose=True,
         allow_delegation=False
     )
