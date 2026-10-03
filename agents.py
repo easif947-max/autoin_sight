@@ -7,13 +7,13 @@ def get_llm():
     if not groq_key:
         raise ValueError("GROQ_API_KEY is missing! Set it in Streamlit Secrets.")
     
-    # Explicitly set GROQ_API_KEY in environment
+    # Ensure environment variable is explicitly set for LiteLLM
     os.environ["GROQ_API_KEY"] = groq_key
 
+    # Use the official production Groq model identifier in CrewAI
     return LLM(
         model="groq/openai/gpt-oss-120b",
-        api_key=groq_key,
-        base_url="https://api.groq.com/openai/v1"
+        api_key=groq_key
     )
 
 def create_manager_agent():
